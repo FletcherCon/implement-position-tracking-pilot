@@ -49,21 +49,25 @@
     // Color palette for phases
     const colors = ['#5b7cfa', '#748ffc', '#339af0', '#22b8cf', '#20c997', '#51cf66', '#ffd43b'];
 
-    // Create individual traces for each phase
+    // Create traces using scatter with shapes
     const traces = data.map((d, idx) => {
       const start = new Date(d.Start);
       const finish = new Date(d.Finish);
       const duration = (finish - start) / (1000 * 60 * 60 * 24);
       
       return {
-        x: [duration],
-        y: [d.Phase],
-        base: [start],
+        x: [start, finish],
+        y: [d.Phase, d.Phase],
+        mode: 'lines+markers',
+        line: {
+          color: colors[idx % colors.length],
+          width: 20
+        },
+        marker: {
+          size: 0
+        },
         name: d.Phase,
-        type: 'bar',
-        orientation: 'h',
-        marker: { color: colors[idx % colors.length] },
-        hovertemplate: `<b>${d.Phase}</b><br>Start: %{base|%b %d, %Y}<br>End: ${finish.toLocaleDateString()}<br>Duration: ${Math.round(duration)} days<extra></extra>`,
+        hovertemplate: `<b>${d.Phase}</b><br>Start: ${start.toLocaleDateString()}<br>End: ${finish.toLocaleDateString()}<br>Duration: ${Math.round(duration)} days<extra></extra>`,
         showlegend: false
       };
     });
@@ -75,20 +79,17 @@
         title: 'Timeline'
       },
       yaxis: {
-        automargin: true,
-        categoryorder: 'array',
-        categoryarray: data.map(d => d.Phase).reverse()
+        automargin: true
       },
       plot_bgcolor: '#1a1e24',
       paper_bgcolor: '#0f1214',
       font: { color: '#eaecef', size: 12 },
       margin: { l: 200, r: 40, t: 80, b: 60 },
-      hovermode: 'closest',
-      barmode: 'overlay'
+      hovermode: 'closest'
     };
 
     Plotly.newPlot('chart', traces, layout, { responsive: true });
   </script>
-  <div class="footer">© 2025 Higgins - Pilot Implementation Plan</div>
+  <div class="footer">© 2025 Brian Perry Civil - Pilot Implementation Plan</div>
 </body>
 </html>
