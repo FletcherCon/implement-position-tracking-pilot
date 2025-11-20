@@ -1,0 +1,55 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pilot Implementation Plan – Interactive Gantt</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 24px; background:#0f1214; color:#eaecef; }
+    h1 { font-size: 24px; margin-bottom: 8px; }
+    p { color:#aab; }
+    #chart { width: 100%; height: 600px; }
+    .footer { margin-top: 24px; font-size: 12px; color:#8a94a6; }
+  </style>
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+</head>
+<body>
+  <h1>Pilot Implementation Plan – Interactive Gantt</h1>
+  <p>Use zoom/pan and hover to explore dates and phases. Share this page via GitHub Pages.</p>
+  <div id="chart"></div>
+  <script>
+    fetch('pilot_implementation_gantt.json')
+      .then(resp => resp.json())
+      .then(data => {
+        // Convert to a Plotly-friendly structure
+        const phases = data.map(d => d.Phase);
+        const starts = data.map(d => new Date(d.Start));
+        const finishes = data.map(d => new Date(d.Finish));
+
+        const bars = data.map(d => ({
+          type: 'bar',
+          x: [(new Date(d.Finish) - new Date(d.Start)) / (1000*60*60*24)],
+          y: [d.Phase],
+          base: [new Date(d.Start)],
+          orientation: 'h',
+          marker: { color: '#5b7cfa' },
+          hovertemplate: `${d.Phase}<br>%{base|%b %d, %Y} → %{x} days<extra></extra>`
+        }));
+
+        const layout = {
+          barmode: 'stack',
+          title: 'Gantt Chart – Pilot (10 Weeks)',
+          xaxis: { type: 'date' },
+          yaxis: { automargin: true },
+          plot_bgcolor: '#0f1214',
+          paper_bgcolor: '#0f1214',
+          font: { color: '#eaecef' },
+          margin: { l: 180, r: 40, t: 60, b: 60 }
+        };
+        Plotly.newPlot('chart', bars, layout, {responsive:true});
+      });
+  </script>
+  <div class="footer">© 2025 Brian Perry Civil – Pilot plan for Higgins · Built with Plotly</div>
+</body>
+</html>
