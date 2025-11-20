@@ -36,73 +36,40 @@
   <p>Use zoom/pan and hover to explore dates and phases.</p>
   <div id="chart"></div>
   <script>
-    // Embedded data to work without external JSON file
     const data = [
-      {
-        "Phase": "Kickoff & Design",
-        "Start": "2025-11-24",
-        "Finish": "2025-12-07"
-      },
-      {
-        "Phase": "Procurement & Setup",
-        "Start": "2025-12-08",
-        "Finish": "2025-12-21"
-      },
-      {
-        "Phase": "Installation",
-        "Start": "2025-12-22",
-        "Finish": "2026-01-04"
-      },
-      {
-        "Phase": "Integration",
-        "Start": "2026-01-05",
-        "Finish": "2026-01-11"
-      },
-      {
-        "Phase": "Testing",
-        "Start": "2026-01-12",
-        "Finish": "2026-01-18"
-      },
-      {
-        "Phase": "Data Analysis",
-        "Start": "2026-01-19",
-        "Finish": "2026-01-25"
-      },
-      {
-        "Phase": "Reporting & Handover",
-        "Start": "2026-01-26",
-        "Finish": "2026-02-01"
-      }
+      { "Phase": "Kickoff & Design", "Start": "2025-11-24", "Finish": "2025-12-07" },
+      { "Phase": "Procurement & Setup", "Start": "2025-12-08", "Finish": "2025-12-21" },
+      { "Phase": "Installation", "Start": "2025-12-22", "Finish": "2026-01-04" },
+      { "Phase": "Integration", "Start": "2026-01-05", "Finish": "2026-01-11" },
+      { "Phase": "Testing", "Start": "2026-01-12", "Finish": "2026-01-18" },
+      { "Phase": "Data Analysis", "Start": "2026-01-19", "Finish": "2026-01-25" },
+      { "Phase": "Reporting & Handover", "Start": "2026-01-26", "Finish": "2026-02-01" }
     ];
 
-    const bars = data.map(d => {
-      const start = new Date(d.Start);
-      const finish = new Date(d.Finish);
-      const durationDays = (finish - start) / (1000 * 60 * 60 * 24) + 1;
-
-      return {
-        type: 'bar',
-        x: [durationDays],
-        y: [d.Phase],
-        base: [start],
-        orientation: 'h',
-        marker: { color: '#5b7cfa' },
-        hovertemplate: `<b>${d.Phase}</b><br>` +
-                       `Start: %{base|%b %d, %Y}<br>` +
-                       `Duration: %{x} days<extra></extra>`,
-        showlegend: false
-      };
-    });
+    const trace = {
+      x: data.map(d => {
+        const start = new Date(d.Start);
+        const finish = new Date(d.Finish);
+        return finish - start;
+      }),
+      y: data.map(d => d.Phase),
+      base: data.map(d => new Date(d.Start)),
+      type: 'bar',
+      orientation: 'h',
+      marker: {
+        color: '#5b7cfa'
+      },
+      hovertemplate: '%{y}<br>Start: %{base|%b %d, %Y}<br>Duration: %{x:,.0f} ms<extra></extra>'
+    };
 
     const layout = {
       title: 'Gantt Chart - Pilot Implementation (10 Weeks)',
-      xaxis: { 
+      xaxis: {
         type: 'date',
         title: 'Timeline'
       },
-      yaxis: { 
-        automargin: true,
-        title: 'Phase'
+      yaxis: {
+        automargin: true
       },
       plot_bgcolor: '#1a1e24',
       paper_bgcolor: '#0f1214',
@@ -111,7 +78,7 @@
       hovermode: 'closest'
     };
 
-    Plotly.newPlot('chart', bars, layout, { responsive: true, displayModeBar: true });
+    Plotly.newPlot('chart', [trace], layout, { responsive: true });
   </script>
   <div class="footer">© 2025 Brian Perry Civil - Pilot Implementation Plan</div>
 </body>
