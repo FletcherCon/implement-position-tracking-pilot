@@ -1,55 +1,118 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pilot Implementation Plan – Interactive Gantt</title>
+  <title>Pilot Implementation Plan - Interactive Gantt</title>
   <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 24px; background:#0f1214; color:#eaecef; }
-    h1 { font-size: 24px; margin-bottom: 8px; }
-    p { color:#aab; }
-    #chart { width: 100%; height: 600px; }
-    .footer { margin-top: 24px; font-size: 12px; color:#8a94a6; }
+    body { 
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; 
+      margin: 0; 
+      padding: 24px; 
+      background: #0f1214; 
+      color: #eaecef; 
+    }
+    h1 { 
+      font-size: 24px; 
+      margin-bottom: 8px; 
+    }
+    p { 
+      color: #aab; 
+    }
+    #chart { 
+      width: 100%; 
+      height: 600px; 
+    }
+    .footer { 
+      margin-top: 24px; 
+      font-size: 12px; 
+      color: #8a94a6; 
+    }
   </style>
   <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
 </head>
 <body>
-  <h1>Pilot Implementation Plan – Interactive Gantt</h1>
-  <p>Use zoom/pan and hover to explore dates and phases. Share this page via GitHub Pages.</p>
+  <h1>Pilot Implementation Plan - Interactive Gantt</h1>
+  <p>Use zoom/pan and hover to explore dates and phases.</p>
   <div id="chart"></div>
   <script>
-    fetch('pilot_implementation_gantt.json')
-      .then(resp => resp.json())
-      .then(data => {
-        // Convert to a Plotly-friendly structure
-        const phases = data.map(d => d.Phase);
-        const starts = data.map(d => new Date(d.Start));
-        const finishes = data.map(d => new Date(d.Finish));
+    // Embedded data to work without external JSON file
+    const data = [
+      {
+        "Phase": "Kickoff & Design",
+        "Start": "2025-11-24",
+        "Finish": "2025-12-07"
+      },
+      {
+        "Phase": "Procurement & Setup",
+        "Start": "2025-12-08",
+        "Finish": "2025-12-21"
+      },
+      {
+        "Phase": "Installation",
+        "Start": "2025-12-22",
+        "Finish": "2026-01-04"
+      },
+      {
+        "Phase": "Integration",
+        "Start": "2026-01-05",
+        "Finish": "2026-01-11"
+      },
+      {
+        "Phase": "Testing",
+        "Start": "2026-01-12",
+        "Finish": "2026-01-18"
+      },
+      {
+        "Phase": "Data Analysis",
+        "Start": "2026-01-19",
+        "Finish": "2026-01-25"
+      },
+      {
+        "Phase": "Reporting & Handover",
+        "Start": "2026-01-26",
+        "Finish": "2026-02-01"
+      }
+    ];
 
-        const bars = data.map(d => ({
-          type: 'bar',
-          x: [(new Date(d.Finish) - new Date(d.Start)) / (1000*60*60*24)],
-          y: [d.Phase],
-          base: [new Date(d.Start)],
-          orientation: 'h',
-          marker: { color: '#5b7cfa' },
-          hovertemplate: `${d.Phase}<br>%{base|%b %d, %Y} → %{x} days<extra></extra>`
-        }));
+    const bars = data.map(d => {
+      const start = new Date(d.Start);
+      const finish = new Date(d.Finish);
+      const durationDays = (finish - start) / (1000 * 60 * 60 * 24) + 1;
 
-        const layout = {
-          barmode: 'stack',
-          title: 'Gantt Chart – Pilot (10 Weeks)',
-          xaxis: { type: 'date' },
-          yaxis: { automargin: true },
-          plot_bgcolor: '#0f1214',
-          paper_bgcolor: '#0f1214',
-          font: { color: '#eaecef' },
-          margin: { l: 180, r: 40, t: 60, b: 60 }
-        };
-        Plotly.newPlot('chart', bars, layout, {responsive:true});
-      });
+      return {
+        type: 'bar',
+        x: [durationDays],
+        y: [d.Phase],
+        base: [start],
+        orientation: 'h',
+        marker: { color: '#5b7cfa' },
+        hovertemplate: `<b>${d.Phase}</b><br>` +
+                       `Start: %{base|%b %d, %Y}<br>` +
+                       `Duration: %{x} days<extra></extra>`,
+        showlegend: false
+      };
+    });
+
+    const layout = {
+      title: 'Gantt Chart - Pilot Implementation (10 Weeks)',
+      xaxis: { 
+        type: 'date',
+        title: 'Timeline'
+      },
+      yaxis: { 
+        automargin: true,
+        title: 'Phase'
+      },
+      plot_bgcolor: '#1a1e24',
+      paper_bgcolor: '#0f1214',
+      font: { color: '#eaecef' },
+      margin: { l: 200, r: 40, t: 80, b: 60 },
+      hovermode: 'closest'
+    };
+
+    Plotly.newPlot('chart', bars, layout, { responsive: true, displayModeBar: true });
   </script>
-  <div class="footer">© 2025 Brian Perry Civil – Pilot plan for Higgins · Built with Plotly</div>
+  <div class="footer">© 2025 Brian Perry Civil - Pilot Implementation Plan</div>
 </body>
 </html>
