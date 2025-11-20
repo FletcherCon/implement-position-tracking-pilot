@@ -46,40 +46,7 @@
       { "Phase": "Reporting & Handover", "Start": "2026-01-26", "Finish": "2026-02-01" }
     ];
 
-    const trace = {
-      x: data.map(d => {
-        const start = new Date(d.Start);
-        const finish = new Date(d.Finish);
-        return finish - start;
-      }),
-      y: data.map(d => d.Phase),
-      base: data.map(d => new Date(d.Start)),
-      type: 'bar',
-      orientation: 'h',
-      marker: {
-        color: '#5b7cfa'
-      },
-      hovertemplate: '%{y}<br>Start: %{base|%b %d, %Y}<br>Duration: %{x:,.0f} ms<extra></extra>'
-    };
+    // Color palette for phases
+    const colors = ['#5b7cfa', '#748ffc', '#339af0', '#22b8cf', '#20c997', '#51cf66', '#ffd43b'];
 
-    const layout = {
-      title: 'Gantt Chart - Pilot Implementation (10 Weeks)',
-      xaxis: {
-        type: 'date',
-        title: 'Timeline'
-      },
-      yaxis: {
-        automargin: true
-      },
-      plot_bgcolor: '#1a1e24',
-      paper_bgcolor: '#0f1214',
-      font: { color: '#eaecef' },
-      margin: { l: 200, r: 40, t: 80, b: 60 },
-      hovermode: 'closest'
-    };
-
-    Plotly.newPlot('chart', [trace], layout, { responsive: true });
-  </script>
-  <div class="footer">© 2025 Brian Perry Civil - Pilot Implementation Plan</div>
-</body>
-</html>
+    //
