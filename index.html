@@ -15,6 +15,13 @@
     h1 { 
       font-size: 24px; 
       margin-bottom: 8px; 
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      height: 50px;
+      width: auto;
     }
     p { 
       color: #aab; 
@@ -32,7 +39,10 @@
   <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
 </head>
 <body>
-  <h1>Pilot Implementation Plan - Interactive Gantt</h1>
+  <h1>
+    Pilot Implementation Plan - Interactive Gantt
+    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/7/74/Higgins_logo.png/440px-Higgins_logo.png" alt="Higgins Logo" class="logo">
+  </h1>
   <p>Use zoom/pan and hover to explore dates and phases.</p>
   <div id="chart"></div>
   <script>
